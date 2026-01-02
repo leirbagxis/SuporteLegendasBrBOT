@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"telegram_bot_project/internal/api/models"
 	"telegram_bot_project/internal/api/services"
@@ -32,22 +33,52 @@ func CaptionController(client *telegram.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var channelData models.CaptionRequest
 		if err := c.ShouldBindJSON(&channelData); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"success": false,
-				"message": "Dados inválidos: " + err.Error(),
+			c.JSON(http.StatusBadRequest, models.CaptionResponse{
+				Success: false,
+				Message: "Dados inválidos: " + err.Error(),
 			})
 			return
 		}
 
 		err := services.EditCaption(client, &channelData)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"success": false,
-				"message": "erro ao editar mensagem " + err.Error(),
+			c.JSON(http.StatusBadRequest, models.CaptionResponse{
+				Success: false,
+				Message: "erro ao editar mensagem " + err.Error(),
 			})
 			return
 		}
 
-		c.JSON(http.StatusOK, channelData)
+		c.JSON(http.StatusOK, models.CaptionResponse{
+			Success: true,
+			Message: "Legenda editada com sucesso",
+		})
+	}
+}
+
+func EnterInvitationController(client *telegram.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var invitationData models.InvitationRequest
+		if err := c.ShouldBindJSON(&invitationData); err != nil {
+			c.JSON(http.StatusBadRequest, models.CaptionResponse{
+				Success: false,
+				Message: "Dados inválidos: " + err.Error(),
+			})
+			return
+		}
+
+		res, err := services.EnterInvitationLink(client, &invitationData)
+		if err != nil || !res {
+			c.JSON(http.StatusBadRequest, models.CaptionResponse{
+				Success: false,
+				Message: "erro ao entrar no canal " + err.Error(),
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, models.CaptionResponse{
+			Success: true,
+			Message: fmt.Sprintf("%s", res),
+		})
 	}
 }

@@ -15,7 +15,8 @@ func SetupRouter(client *telegram.Client) *gin.Engine {
 		api.GET("/status", controllers.GetStatus)
 		api.GET("/bot/info", controllers.GetBotInfo)
 
-		api.POST("/bot/caption", controllers.CaptionController(client))
+		api.PUT("/bot/caption", controllers.CaptionController(client))
+		api.POST("/bot/enterinvitation", controllers.EnterInvitationController(client))
 	}
 
 	return r

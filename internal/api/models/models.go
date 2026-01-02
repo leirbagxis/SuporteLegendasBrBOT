@@ -17,3 +17,12 @@ type CaptionRequest struct {
 	MessageID int    `json:"message_id"`
 	Caption   string `json:"caption"`
 }
+
+type CaptionResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
+type InvitationRequest struct {
+	InvitationLink string `json:"invitation_link"`
+}
